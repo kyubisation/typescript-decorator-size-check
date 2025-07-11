@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./standard-no-tslib",
+    "importHelpers": false
+  },
+  "include": ["standard-*.ts"],
+  "exclude": []
+}

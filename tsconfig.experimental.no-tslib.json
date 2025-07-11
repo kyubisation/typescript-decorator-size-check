@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "outDir": "./experimental-no-tslib",
+    "importHelpers": false
+  },
+  "include": ["experimental-*.ts"],
+  "exclude": []
+}

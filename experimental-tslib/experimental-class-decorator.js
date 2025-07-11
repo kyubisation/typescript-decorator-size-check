@@ -1,0 +1,9 @@
+import { __decorate } from "tslib";
+import { LitElement } from "lit";
+import { customElement } from "lit/decorators.js";
+let MyElement = class MyElement extends LitElement {
+};
+MyElement = __decorate([
+    customElement("my-element")
+], MyElement);
+export { MyElement };
