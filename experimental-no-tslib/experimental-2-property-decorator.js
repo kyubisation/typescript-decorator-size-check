@@ -7,8 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { LitElement } from "lit";
 import { property } from "lit/decorators.js";
 export class MyElement extends LitElement {
-    name = "World";
+    name = "";
+    name2 = "";
 }
 __decorate([
     property()
 ], MyElement.prototype, "name", void 0);
+__decorate([
+    property()
+], MyElement.prototype, "name2", void 0);

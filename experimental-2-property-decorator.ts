@@ -3,5 +3,8 @@ import { property } from "lit/decorators.js";
 
 export class MyElement extends LitElement {
   @property()
-  name = "World";
+  name = "";
+
+  @property()
+  name2 = "";
 }

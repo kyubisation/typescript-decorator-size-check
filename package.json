@@ -4,14 +4,15 @@
   "description": "Checking the output size of decorator implementations",
   "type": "module",
   "scripts": {
-    "calculate": "run-s build minify calculate-size",
+    "calculate": "run-s clean build minify calculate-size",
     "build": "run-p build:*",
     "build:standard-no-tslib": "tsc -p tsconfig.standard.no-tslib.json",
     "build:standard-tslib": "tsc -p tsconfig.standard.tslib.json",
     "build:experimental-no-tslib": "tsc -p tsconfig.experimental.no-tslib.json",
     "build:experimental-tslib": "tsc -p tsconfig.experimental.tslib.json",
-    "minify": "node minify.ts",
-    "calculate-size": "node calculate-size.ts"
+    "clean": "node scripts/clean.ts",
+    "minify": "node scripts/minify.ts",
+    "calculate-size": "node scripts/calculate-size.ts"
   },
   "repository": {
     "type": "git",

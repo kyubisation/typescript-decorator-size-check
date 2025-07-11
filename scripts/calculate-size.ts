@@ -1,24 +1,18 @@
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
-import { fileURLToPath } from "node:url";
-import * as pkg from "./package-lock.json" with { type: "json" };
+import * as pkg from "../package-lock.json" with { type: "json" };
+import { outputDirs, root } from "./common.ts";
 
-const sizes = readdirSync(import.meta.dirname)
-  .filter((file) => file.startsWith("tsconfig.") && file !== "tsconfig.json")
-  .map(
-    (file) =>
-      JSON.parse(
-        readFileSync(fileURLToPath(import.meta.resolve(`./${file}`)), "utf8")
-      ).compilerOptions.outDir
-  )
-  .map((dir) => fileURLToPath(import.meta.resolve(dir)))
+const sizes = outputDirs
   .flatMap((dir) =>
     readdirSync(dir)
-      .filter((file) => file.endsWith(".js"))
+      .filter((file) => file.endsWith(".js") && !file.endsWith(".min.js"))
       .map((file) => ({
         type: `${basename(dir)}/${file}`,
         size: readFileSync(join(dir, file), "utf8").length,
         diff: 0,
+        minifiedSize: readFileSync(join(dir, file.replace(/.js$/, '.min.js')), "utf8").length,
+        minifiedDiff: 0,
       }))
   );
 
@@ -28,6 +22,7 @@ for (const size of sizes) {
     : size.type.replaceAll("standard", "experimental");
   const comparison = sizes.find((s) => s.type === comparisonName)!;
   size.diff = size.size - comparison.size;
+  size.minifiedDiff = size.minifiedSize - comparison.minifiedSize;
 }
 
 console.table(
@@ -37,7 +32,7 @@ console.table(
   )
 );
 
-const readmePath = fileURLToPath(import.meta.resolve("./README.md"));
+const readmePath = join(root, "README.md");
 const insertMarker = "## Results";
 const readme = readFileSync(readmePath, "utf8").split(insertMarker)[0];
 const packages = 'default' in pkg ? (pkg.default as typeof pkg).packages : pkg.packages;
@@ -49,14 +44,15 @@ writeFileSync(
 Run \`npm run calculate\` to transpile the examples and calculate the resulting sizes.
 
 TypeScript: ${packages["node_modules/typescript"].version}
+
 Terser (.min.js): ${packages["node_modules/terser"].version}
 
-| Type | Size | Diff |
-| ---- | ---- | ---- |
+| Type | Size | Diff | Minified Size | Minified Diff |
+| ---- | ---- | ---- | ---- | ------------- |
 ${sizes
     .map(
-      ({ type, size, diff }) =>
-        `| ${type} | ${size.toLocaleString()} | ${diff} |`).join("\n")}
+      ({ type, size, diff, minifiedSize, minifiedDiff }) =>
+        `| ${type} | ${size} | ${diff} | ${minifiedSize} | ${minifiedDiff} |`).join("\n")}
 `,
   "utf8"
 );
